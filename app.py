@@ -97,19 +97,17 @@ tab1,tab2,tab3,tab4,tab5 = st.tabs([
 with tab1:
 
     col1,col2,col3 = st.columns([2,2,1])
-
-    col1.metric("Career Prediction Accuracy","95%")
-    col2.metric("Resume Analysis Quality","92%")
-
+    with col1:
+        st.metric("Career Prediction Accuracy","95%")
+        # 0.5 cm spacing
+    st.markdown("<div style='height:0.5cm'></div>", unsafe_allow_html=True)
+    st.header("Welcome to JobFitBot")
+    with col2:
+        st.metric("Resume Analysis Quality","92%")
     with col3:
         fig = plt.figure(figsize=(2,2))
         plt.pie([35,25,20,20],labels=["AI","Cloud","Cyber","Data"])
         st.pyplot(fig)
-
-    st.markdown("<br><br>", unsafe_allow_html=True)
-
-    st.header("Welcome to JobFitBot")
-
     st.markdown("""
 ### 🚀 Your AI Powered Career Guidance Platform
 
