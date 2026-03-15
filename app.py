@@ -4,7 +4,7 @@ from PyPDF2 import PdfReader
 
 st.set_page_config(page_title="JobFitBot", layout="wide")
 
-# ---------- DARK THEME ----------
+# ------------------ DARK THEME ------------------
 
 st.markdown("""
 <style>
@@ -13,27 +13,19 @@ st.markdown("""
 background-color:#0f172a;
 }
 
-/* headings */
-
 h1,h2,h3,h4,h5,h6{
 color:#ffffff;
 }
-
-/* normal text */
 
 p,span,label{
 color:#e2e8f0 !important;
 font-size:16px;
 }
 
-/* tab titles */
-
 button[data-baseweb="tab"]{
 color:white !important;
 font-size:16px;
 }
-
-/* buttons */
 
 .stButton>button{
 background:linear-gradient(90deg,#6366f1,#06b6d4);
@@ -47,7 +39,7 @@ font-weight:bold;
 
 st.title("🤖 JobFitBot – AI Career Advisor")
 
-# ---------- JOB DATABASE ----------
+# ------------------ JOB DATABASE ------------------
 
 jobs = {
 "Data Scientist":["python","machine learning","sql"],
@@ -88,7 +80,7 @@ education_branches={
 "PG":["MBA","MCA","M.Sc"]
 }
 
-# ---------- TABS ----------
+# ------------------ TABS ------------------
 
 tab1,tab2,tab3,tab4,tab5 = st.tabs([
 "🏠 Home",
@@ -98,9 +90,9 @@ tab1,tab2,tab3,tab4,tab5 = st.tabs([
 "💬 Career Chatbot"
 ])
 
-# ====================================================
-# HOME
-# ====================================================
+# =================================================
+# HOME PAGE
+# =================================================
 
 with tab1:
 
@@ -110,25 +102,47 @@ with tab1:
     col2.metric("Resume Analysis Quality","92%")
 
     with col3:
-
         fig = plt.figure(figsize=(2,2))
         plt.pie([35,25,20,20],labels=["AI","Cloud","Cyber","Data"])
         st.pyplot(fig)
 
+    st.markdown("<br><br>", unsafe_allow_html=True)
+
     st.header("Welcome to JobFitBot")
 
-    st.write("""
-JobFitBot is an AI-based career advisor that helps students:
+    st.markdown("""
+### 🚀 Your AI Powered Career Guidance Platform
 
-• Discover career opportunities  
-• Analyze resume skills  
-• Identify skill gaps  
-• Build a career learning roadmap
+JobFitBot helps students discover the best career paths using **AI skill analysis, resume intelligence, and career prediction models**.
 """)
 
-# ====================================================
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    colA,colB,colC = st.columns(3)
+
+    with colA:
+        st.markdown("""
+### 🎯 Career Prediction
+Analyze your skills and discover the **best career paths** with AI recommendations.
+""")
+
+    with colB:
+        st.markdown("""
+### 📄 Resume Analyzer
+Upload your resume and get **top career matches** based on your skills.
+""")
+
+    with colC:
+        st.markdown("""
+### 🧠 Career Test
+Take a quick test to discover **careers that match your interests**.
+""")
+
+    st.markdown("---")
+
+# =================================================
 # CAREER PREDICTION
-# ====================================================
+# =================================================
 
 with tab2:
 
@@ -146,7 +160,7 @@ with tab2:
     cert_text = st.text_input("Certifications (optional)")
 
     cert_upload = st.file_uploader(
-    "Upload Certifications (optional)",
+    "📂 Drag and drop certification files here or click to upload",
     accept_multiple_files=True
     )
 
@@ -186,13 +200,16 @@ with tab2:
         for skill in top_gap:
             st.write("Learn:",skill)
 
-# ====================================================
+# =================================================
 # RESUME ANALYZER
-# ====================================================
+# =================================================
 
 with tab3:
 
-    resume = st.file_uploader("Upload Resume PDF")
+    resume = st.file_uploader(
+    "📄 Drag and drop your resume here or click to upload (PDF)",
+    type=["pdf"]
+    )
 
     if resume:
 
@@ -231,15 +248,15 @@ with tab3:
         for job,score in results[:3]:
             st.write(job,"—",round(score,2),"%")
 
-# ====================================================
+# =================================================
 # CAREER TEST
-# ====================================================
+# =================================================
 
 with tab4:
 
     q1 = st.radio(
-    "Which activity do you enjoy?",
-    ["Coding","Design","Data Analysis","Management","Security"]
+    "Which activity do you enjoy most?",
+    ["Coding","Design","Data Analysis","Management","Cyber Security"]
     )
 
     q2 = st.radio(
@@ -258,15 +275,15 @@ with tab4:
         elif q1=="Data Analysis":
             st.success("Suggested Career: Data Scientist")
 
-        elif q1=="Security":
+        elif q1=="Cyber Security":
             st.success("Suggested Career: Cyber Security Analyst")
 
         else:
             st.success("Suggested Career: Business Manager")
 
-# ====================================================
+# =================================================
 # CHATBOT
-# ====================================================
+# =================================================
 
 with tab5:
 
