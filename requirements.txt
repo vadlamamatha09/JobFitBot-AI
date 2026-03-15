@@ -1,5 +1,4 @@
 streamlit
-pandas
 matplotlib
-numpy
 PyPDF2
+streamlit-echarts
