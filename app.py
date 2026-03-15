@@ -6,33 +6,72 @@ from PyPDF2 import PdfReader
 st.set_page_config(page_title="JobFitBot",layout="wide")
 
 # ---------- DARK UI ----------
-
 st.markdown("""
 <style>
+
+/* MAIN BACKGROUND */
 
 .stApp{
 background-color:#0f172a;
 color:white;
 }
 
-h1,h2,h3,h4,h5,h6{
-color:white;
+/* ALL TEXT */
+
+html, body, [class*="css"]  {
+color: white;
+font-size:16px;
 }
 
-.metric-container{
-display:flex;
-gap:40px;
+/* HEADINGS */
+
+h1,h2,h3,h4,h5,h6{
+color:#f8fafc;
 }
+
+/* INPUT BOXES */
+
+.stTextInput input,
+.stSelectbox div,
+.stFileUploader,
+textarea{
+background-color:#1e293b !important;
+color:white !important;
+border:1px solid #38bdf8 !important;
+}
+
+/* BUTTONS */
 
 .stButton>button{
 background:linear-gradient(90deg,#6366f1,#06b6d4);
 color:white;
 border-radius:10px;
+font-weight:bold;
+}
+
+/* TAB TEXT */
+
+button[data-baseweb="tab"]{
+color:white !important;
+font-size:16px;
+}
+
+/* RADIO TEXT */
+
+.stRadio label{
+color:white !important;
+}
+
+/* METRICS */
+
+[data-testid="stMetric"]{
+background-color:#1e293b;
+padding:10px;
+border-radius:10px;
 }
 
 </style>
 """,unsafe_allow_html=True)
-
 st.title("🤖 JobFitBot – AI Career Advisor")
 
 # ---------- JOB DATABASE ----------
