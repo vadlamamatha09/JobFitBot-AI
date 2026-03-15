@@ -2,21 +2,21 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from PyPDF2 import PdfReader
 
-st.set_page_config(page_title="JobFitBot", layout="wide")
+st.set_page_config(page_title="JobFitBot",layout="wide")
 
-# ---------- BACKGROUND STYLE ----------
+# ---------------- STYLE ----------------
 
 st.markdown("""
 <style>
 
-body{
-margin:0;
-}
-
 .stApp{
-background-image:url("https://images.unsplash.com/photo-1581094794329-c8112a89af12");
+background-image:linear-gradient(
+rgba(0,0,0,0.75),
+rgba(0,0,0,0.75)),
+url("https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d");
+
 background-size:cover;
-background-repeat:no-repeat;
+background-position:center;
 background-attachment:fixed;
 }
 
@@ -24,10 +24,15 @@ background-attachment:fixed;
 padding-top:1rem;
 }
 
+h1,h2,h3,h4,label{
+color:white !important;
+}
+
 .card{
-background:rgba(255,255,255,0.93);
-padding:20px;
+background:white;
+padding:25px;
 border-radius:12px;
+box-shadow:0 6px 20px rgba(0,0,0,0.3);
 }
 
 </style>
@@ -35,7 +40,34 @@ border-radius:12px;
 
 st.title("🤖 JobFitBot – AI Career Advisor")
 
-# ---------- TABS ----------
+# ---------------- JOB DATA ----------------
+
+jobs={
+"Data Scientist":["python","machine learning","sql"],
+"Software Engineer":["java","python","algorithms"],
+"Web Developer":["html","css","javascript","react"],
+"AI Engineer":["python","deep learning"],
+"Cloud Engineer":["aws","docker","linux"],
+"Cyber Security Analyst":["network security","linux"],
+"Data Analyst":["excel","sql","python"]
+}
+
+salary={
+"Data Scientist":"12-30 LPA",
+"Software Engineer":"8-25 LPA",
+"Web Developer":"6-18 LPA",
+"AI Engineer":"15-35 LPA",
+"Cloud Engineer":"10-28 LPA",
+"Cyber Security Analyst":"9-27 LPA",
+"Data Analyst":"6-20 LPA"
+}
+
+skill_database=[
+"python","java","machine learning","sql","html","css",
+"javascript","react","aws","docker","linux","excel"
+]
+
+# ---------------- TABS ----------------
 
 tab1,tab2,tab3,tab4 = st.tabs([
 "🏠 Home",
@@ -44,13 +76,13 @@ tab1,tab2,tab3,tab4 = st.tabs([
 "🧠 Career Test"
 ])
 
-# =====================================================
+# =================================================
 # HOME
-# =====================================================
+# =================================================
 
 with tab1:
 
-    col1,col2 = st.columns([3,1])
+    col1,col2=st.columns([3,1])
 
     with col1:
 
@@ -59,47 +91,53 @@ with tab1:
         st.header("Welcome to JobFitBot")
 
         st.write("""
-JobFitBot is an AI based career advisor platform that helps students:
+JobFitBot is an AI based career advisor platform.
 
-✔ Discover best career roles  
-✔ Analyze their skills and certifications  
-✔ Detect skill gaps  
-✔ Improve job readiness  
+It helps students:
+
+• Discover best career roles  
+• Analyze their skills  
+• Detect skill gaps  
+• Improve job readiness  
 """)
 
         st.markdown('</div>',unsafe_allow_html=True)
 
     with col2:
 
-        st.subheader("Skill Chart")
+        st.subheader("Tech Skills")
 
-        fig = plt.figure(figsize=(2,2))
-        plt.pie([30,25,20,25],
+        fig=plt.figure(figsize=(2,2))
+        plt.pie(
+        [30,25,25,20],
         labels=["Python","AI","Cloud","Web"],
-        colors=["#ff6b6b","#6bc5ff","#ffe66d","#6bff95"])
+        colors=["#ff6b6b","#4ecdc4","#ffe66d","#1a535c"]
+        )
         st.pyplot(fig)
 
         st.subheader("Tech Trends")
 
-        fig2 = plt.figure(figsize=(2,2))
-        plt.pie([35,25,20,20],
+        fig2=plt.figure(figsize=(2,2))
+        plt.pie(
+        [35,25,20,20],
         labels=["AI","Cloud","Cyber","Data"],
-        colors=["#8338ec","#3a86ff","#ff006e","#fb5607"])
+        colors=["#8338ec","#3a86ff","#ff006e","#fb5607"]
+        )
         st.pyplot(fig2)
 
-# =====================================================
+# =================================================
 # CAREER PREDICTION
-# =====================================================
+# =================================================
 
 with tab2:
 
-    col1,col2 = st.columns([3,1])
+    col1,col2=st.columns([3,1])
 
     with col1:
 
         st.markdown('<div class="card">',unsafe_allow_html=True)
 
-        education = st.selectbox(
+        education=st.selectbox(
         "Education",
         ["Inter","Diploma","Degree","B.Tech","M.Tech","PG"]
         )
@@ -122,31 +160,31 @@ with tab2:
         else:
             branches=["MBA","MCA","M.Sc"]
 
-        branch = st.selectbox("Branch / Field",branches)
+        branch=st.selectbox("Branch / Field",branches)
 
-        experience = st.selectbox(
+        experience=st.selectbox(
         "Experience",
         ["Fresher","0-2 years","2-5 years","5+ years"]
         )
 
-        skills_input = st.text_input(
+        skills_input=st.text_input(
         "Enter Skills (comma separated)"
         )
 
-        certifications = st.text_input(
-        "Enter Certifications (optional)"
+        certifications=st.text_input(
+        "Enter Certifications"
         )
 
-        cert_upload = st.file_uploader(
-        "Upload Certificates (optional)",
+        cert_upload=st.file_uploader(
+        "Upload Certificates",
         accept_multiple_files=True
         )
 
-        analyze = st.button("🚀 Analyze My Career")
+        analyze=st.button("🚀 Analyze My Career")
 
         st.markdown('</div>',unsafe_allow_html=True)
 
-    # ---------- SIDE CHARTS ----------
+    # -------- side charts --------
 
     with col2:
 
@@ -157,9 +195,11 @@ with tab2:
             skills=[i.strip() for i in skills_input.split(",")]
 
             fig=plt.figure(figsize=(2,2))
-            plt.pie([1]*len(skills),
+            plt.pie(
+            [1]*len(skills),
             labels=skills,
-            colors=["#ff6b6b","#4ecdc4","#ffe66d","#1a535c","#ff9f1c"])
+            colors=["#ff6b6b","#4ecdc4","#ffe66d","#1a535c","#ff9f1c"]
+            )
             st.pyplot(fig)
 
         st.subheader("Tech Trends")
@@ -172,29 +212,7 @@ with tab2:
         )
         st.pyplot(fig2)
 
-    # ---------- JOB DATABASE ----------
-
-    jobs={
-    "Data Scientist":["python","machine learning","sql"],
-    "Software Engineer":["java","python","algorithms"],
-    "Web Developer":["html","css","javascript","react"],
-    "AI Engineer":["python","deep learning"],
-    "Cloud Engineer":["aws","docker","linux"],
-    "Cyber Security Analyst":["network security","linux"],
-    "Data Analyst":["excel","sql","python"]
-    }
-
-    salary={
-    "Data Scientist":"12-30 LPA",
-    "Software Engineer":"8-25 LPA",
-    "Web Developer":"6-18 LPA",
-    "AI Engineer":"15-35 LPA",
-    "Cloud Engineer":"10-28 LPA",
-    "Cyber Security Analyst":"9-27 LPA",
-    "Data Analyst":"6-20 LPA"
-    }
-
-    # ---------- ANALYSIS ----------
+    # -------- career analysis --------
 
     if analyze:
 
@@ -218,32 +236,28 @@ with tab2:
 
             results=sorted(results,key=lambda x:x[1],reverse=True)
 
-            # ---------- DASHBOARD ----------
+            # -------- dashboard --------
 
             st.subheader("📊 AI Career Dashboard")
 
-            colA,colB,colC,colD = st.columns(4)
+            c1,c2,c3,c4=st.columns(4)
 
             resume_score=len(user_skills)*10
-            if resume_score>100:
-                resume_score=100
+            resume_score=min(resume_score,100)
 
             career_match=int(results[0][1])
 
             skill_strength=len(user_skills)*10
-            if skill_strength>100:
-                skill_strength=100
+            skill_strength=min(skill_strength,100)
 
-            job_readiness=int((resume_score+career_match)/2)
+            job_ready=int((resume_score+career_match)/2)
 
-            colA.metric("📄 Resume Score",str(resume_score)+"/100")
-            colB.metric("🎯 Career Match",str(career_match)+"%")
-            colC.metric("💡 Skill Strength",str(skill_strength)+"/100")
-            colD.metric("🚀 Job Readiness",str(job_readiness)+"%")
+            c1.metric("Resume Score",str(resume_score)+"/100")
+            c2.metric("Career Match",str(career_match)+"%")
+            c3.metric("Skill Strength",str(skill_strength)+"/100")
+            c4.metric("Job Readiness",str(job_ready)+"%")
 
             st.write("---")
-
-            # ---------- BEST MATCHES ----------
 
             st.subheader("🎯 Best Career Matches")
 
@@ -266,27 +280,21 @@ with tab2:
 
                 st.write("---")
 
-# =====================================================
+# =================================================
 # RESUME ANALYZER
-# =====================================================
+# =================================================
 
 with tab3:
 
     st.markdown('<div class="card">',unsafe_allow_html=True)
 
-    st.header("📄 Resume Analyzer")
+    st.header("Resume Analyzer")
 
-    resume_file = st.file_uploader("Upload Resume (PDF)")
+    resume=st.file_uploader("Upload Resume (PDF)")
 
-    skill_database=[
-    "python","java","machine learning",
-    "sql","html","css","javascript",
-    "react","aws","docker","linux","excel"
-    ]
+    if resume:
 
-    if resume_file:
-
-        reader=PdfReader(resume_file)
+        reader=PdfReader(resume)
 
         text=""
 
@@ -305,17 +313,26 @@ with tab3:
 
         st.write(found)
 
+        # ---- improvement ----
+
+        missing=[skill for skill in skill_database if skill not in found]
+
+        st.subheader("Resume Improvement Suggestions")
+
+        for m in missing[:5]:
+            st.write("Learn:",m)
+
     st.markdown('</div>',unsafe_allow_html=True)
 
-# =====================================================
+# =================================================
 # CAREER TEST
-# =====================================================
+# =================================================
 
 with tab4:
 
     st.markdown('<div class="card">',unsafe_allow_html=True)
 
-    st.header("🧠 Career Personality Test")
+    st.header("Career Personality Test")
 
     q1=st.radio(
     "Which activity do you enjoy most?",
@@ -339,4 +356,4 @@ with tab4:
     st.markdown('</div>',unsafe_allow_html=True)
 
 st.write("---")
-st.write("JobFitBot – AI Career Advisor | Final Year Project")
+st.write("JobFitBot – AI Career Advisor")
