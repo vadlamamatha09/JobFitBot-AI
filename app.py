@@ -4,7 +4,7 @@ from PyPDF2 import PdfReader
 
 st.set_page_config(page_title="JobFitBot", layout="wide")
 
-# ---------- CLEAN STYLE ----------
+# ---------- STYLE ----------
 
 st.markdown("""
 <style>
@@ -55,20 +55,29 @@ skills_db=[
 "javascript","react","aws","docker","linux","excel"
 ]
 
-# ---------- LEARNING SOURCES ----------
-
 learning_resources={
 "python":["Coursera Python Course","freeCodeCamp Python","YouTube Python Crash Course"],
 "machine learning":["Coursera ML Course","freeCodeCamp ML Tutorial","YouTube ML Crash Course"],
-"sql":["Coursera SQL Course","freeCodeCamp SQL Course","YouTube SQL Tutorial"],
-"html":["freeCodeCamp HTML Course","YouTube HTML Tutorial"],
-"css":["freeCodeCamp CSS Course","YouTube CSS Tutorial"],
-"javascript":["freeCodeCamp JavaScript","YouTube JavaScript Course"],
+"sql":["Coursera SQL Course","freeCodeCamp SQL","YouTube SQL Tutorial"],
+"html":["freeCodeCamp HTML","YouTube HTML Tutorial"],
+"css":["freeCodeCamp CSS","YouTube CSS Tutorial"],
+"javascript":["freeCodeCamp JavaScript","YouTube JS Tutorial"],
 "react":["Udemy React Course","YouTube React Tutorial"],
 "aws":["Coursera AWS Fundamentals","YouTube AWS Tutorial"],
-"docker":["Udemy Docker Course","YouTube Docker Tutorial"],
-"linux":["freeCodeCamp Linux Course","YouTube Linux Tutorial"],
-"excel":["Coursera Excel Course","YouTube Excel Tutorial"]
+"docker":["Udemy Docker","YouTube Docker Tutorial"],
+"linux":["freeCodeCamp Linux","YouTube Linux Tutorial"],
+"excel":["Coursera Excel","YouTube Excel Tutorial"]
+}
+
+# ---------- EDUCATION BRANCHES ----------
+
+education_branches={
+"Inter":["MPC","BiPC","CEC","HEC"],
+"Diploma":["CSE","ECE","EEE","Mechanical","Civil"],
+"Degree":["B.Sc","B.Com","BBA","BA"],
+"B.Tech":["CSE","IT","AI & ML","Data Science","ECE","Mechanical","Civil"],
+"M.Tech":["CSE","AI","Data Science","VLSI"],
+"PG":["MBA","MCA","M.Sc"]
 }
 
 # ---------- TABS ----------
@@ -87,38 +96,38 @@ tab1,tab2,tab3,tab4,tab5 = st.tabs([
 
 with tab1:
 
-    col1,col2,col3,col4 = st.columns(4)
+    col1,col2 = st.columns([3,1])
 
-    col1.metric("Career Prediction Accuracy","95%")
-    col2.metric("Resume Analysis Quality","90%")
-    col3.metric("AI Career Roadmap","92%")
-    col4.metric("Career Guidance","93%")
+    with col1:
 
-    st.markdown("---")
+        st.metric("Career Prediction Accuracy","95%")
+        st.metric("Resume Analysis Quality","90%")
 
-    st.header("Welcome to JobFitBot")
+        st.header("Welcome to JobFitBot")
 
-    st.write("""
-JobFitBot is an AI-powered career guidance platform that helps students:
+        st.write("""
+JobFitBot helps students:
 
-• Discover the best career options  
+• Discover career paths  
 • Analyze resume skills  
-• Identify missing skills  
-• Get a career learning roadmap
+• Identify skill gaps  
+• Get learning roadmap
 """)
 
-    st.subheader("🔥 Trending Tech Careers")
+        st.subheader("Trending Careers")
 
-    trending=["AI Engineer","Data Scientist","Cloud Engineer","Cyber Security"]
+        st.write("• AI Engineer")
+        st.write("• Data Scientist")
+        st.write("• Cloud Engineer")
+        st.write("• Cyber Security Analyst")
 
-    for t in trending:
-        st.write("•",t)
+    with col2:
 
-    st.subheader("📊 Tech Demand")
+        st.subheader("Tech Demand")
 
-    fig=plt.figure()
-    plt.pie([35,25,20,20],labels=["AI","Cloud","Cyber","Data"])
-    st.pyplot(fig)
+        fig=plt.figure(figsize=(2,2))
+        plt.pie([35,25,20,20],labels=["AI","Cloud","Cyber","Data"])
+        st.pyplot(fig)
 
 # =====================================================
 # CAREER PREDICTION
@@ -126,21 +135,36 @@ JobFitBot is an AI-powered career guidance platform that helps students:
 
 with tab2:
 
-    st.markdown("### Enter Your Details")
+    col1,col2 = st.columns([3,1])
 
-    education=st.selectbox("Education",
-    ["Inter","Diploma","Degree","B.Tech","M.Tech","PG"])
+    with col1:
 
-    branch=st.text_input("Branch / Field")
+        education=st.selectbox("Education",list(education_branches.keys()))
 
-    experience=st.selectbox("Experience",
-    ["Fresher","0-2 years","2-5 years","5+ years"])
+        branch=st.selectbox("Branch / Field",education_branches[education])
 
-    skills_input=st.text_input("Enter Skills (comma separated)")
+        experience=st.selectbox("Experience",
+        ["Fresher","0-2 years","2-5 years","5+ years"])
 
-    certifications=st.text_input("Enter Certifications")
+        skills_input=st.text_input("Enter Skills (comma separated)")
 
-    analyze=st.button("Analyze My Career")
+        certifications_text=st.text_input("Enter Certifications (optional)")
+
+        certifications_upload=st.file_uploader(
+        "Upload Certification Files (optional)",
+        accept_multiple_files=True)
+
+        analyze=st.button("Analyze My Career")
+
+    with col2:
+
+        if skills_input:
+
+            skills=[s.strip() for s in skills_input.split(",")]
+
+            fig=plt.figure(figsize=(2,2))
+            plt.pie([1]*len(skills),labels=skills)
+            st.pyplot(fig)
 
     if analyze:
 
@@ -158,15 +182,15 @@ with tab2:
 
         results=sorted(results,key=lambda x:x[1],reverse=True)
 
-        st.subheader("🎯 Top Career Recommendations")
+        st.subheader("Top Career Matches")
 
         for job,score,gap in results[:5]:
 
-            st.write(f"**{job} — Match Probability: {round(score,2)}%**")
+            st.write(f"**{job} — Match: {round(score,2)}%**")
             st.write("Average Salary:",salary[job])
             st.write("---")
 
-        st.subheader("🧭 Career Roadmap")
+        st.subheader("Career Roadmap")
 
         top_job=results[0][0]
         top_gap=results[0][2]
@@ -188,7 +212,7 @@ with tab2:
 
 with tab3:
 
-    resume=st.file_uploader("Upload Resume (PDF)")
+    resume=st.file_uploader("Upload Resume PDF")
 
     if resume:
 
@@ -230,8 +254,6 @@ with tab3:
 
 with tab4:
 
-    st.header("Career Personality Test")
-
     q1=st.radio(
     "Which activity do you enjoy most?",
     ["Coding","Designing","Analyzing Data","Managing People"]
@@ -257,8 +279,6 @@ with tab4:
 
 with tab5:
 
-    st.header("Career Chatbot")
-
     question=st.text_input("Ask a career question")
 
     if question:
@@ -275,4 +295,4 @@ with tab5:
             st.write("Skills: AWS, Docker, Linux")
 
         else:
-            st.write("Try asking about careers like Data Scientist, Cloud Engineer, Software Engineer.")
+            st.write("Try asking about Data Scientist, Cloud Engineer, Software Engineer.")
