@@ -1,28 +1,35 @@
 import streamlit as st
 import matplotlib.pyplot as plt
+import numpy as np
 from PyPDF2 import PdfReader
 
-st.set_page_config(page_title="JobFitBot", layout="wide")
+st.set_page_config(page_title="JobFitBot",layout="wide")
 
-# ---------- STYLE ----------
+# ---------- DARK UI ----------
 
 st.markdown("""
 <style>
-.block-container{
-padding-top:0rem;
-}
 
 .stApp{
-background-color:#f5f7fb;
+background-color:#0f172a;
+color:white;
 }
 
-.card{
-background:white;
-padding:20px;
-border-radius:10px;
-margin-bottom:20px;
-box-shadow:0px 3px 8px rgba(0,0,0,0.1);
+h1,h2,h3,h4,h5,h6{
+color:white;
 }
+
+.metric-container{
+display:flex;
+gap:40px;
+}
+
+.stButton>button{
+background:linear-gradient(90deg,#6366f1,#06b6d4);
+color:white;
+border-radius:10px;
+}
+
 </style>
 """,unsafe_allow_html=True)
 
@@ -37,7 +44,9 @@ jobs={
 "AI Engineer":["python","deep learning"],
 "Cloud Engineer":["aws","docker","linux"],
 "Cyber Security Analyst":["network security","linux"],
-"Data Analyst":["excel","sql","python"]
+"Data Analyst":["excel","sql","python"],
+"UI UX Designer":["figma","design"],
+"Mobile App Developer":["flutter","kotlin","java"]
 }
 
 salary={
@@ -47,42 +56,57 @@ salary={
 "AI Engineer":"15-35 LPA",
 "Cloud Engineer":"10-28 LPA",
 "Cyber Security Analyst":"9-27 LPA",
-"Data Analyst":"6-20 LPA"
+"Data Analyst":"6-20 LPA",
+"UI UX Designer":"5-15 LPA",
+"Mobile App Developer":"7-20 LPA"
 }
 
 skills_db=[
 "python","java","machine learning","sql","html","css",
-"javascript","react","aws","docker","linux","excel"
+"javascript","react","aws","docker","linux","excel",
+"figma","flutter","kotlin"
 ]
 
 learning_resources={
-"python":["Coursera Python Course","freeCodeCamp Python","YouTube Python Crash Course"],
-"machine learning":["Coursera ML Course","freeCodeCamp ML Tutorial","YouTube ML Crash Course"],
-"sql":["Coursera SQL Course","freeCodeCamp SQL","YouTube SQL Tutorial"],
-"html":["freeCodeCamp HTML","YouTube HTML Tutorial"],
-"css":["freeCodeCamp CSS","YouTube CSS Tutorial"],
-"javascript":["freeCodeCamp JavaScript","YouTube JS Tutorial"],
-"react":["Udemy React Course","YouTube React Tutorial"],
-"aws":["Coursera AWS Fundamentals","YouTube AWS Tutorial"],
-"docker":["Udemy Docker","YouTube Docker Tutorial"],
-"linux":["freeCodeCamp Linux","YouTube Linux Tutorial"],
-"excel":["Coursera Excel","YouTube Excel Tutorial"]
+"python":["Coursera Python","freeCodeCamp Python","YouTube Python"],
+"machine learning":["Coursera ML","freeCodeCamp ML","YouTube ML"],
+"sql":["Coursera SQL","freeCodeCamp SQL","YouTube SQL"],
+"html":["freeCodeCamp HTML"],
+"css":["freeCodeCamp CSS"],
+"javascript":["freeCodeCamp JS"],
+"react":["Udemy React"],
+"aws":["Coursera AWS"],
+"docker":["Docker Tutorial"],
+"linux":["Linux Tutorial"],
+"excel":["Excel Tutorial"]
 }
-
-# ---------- EDUCATION BRANCHES ----------
 
 education_branches={
 "Inter":["MPC","BiPC","CEC","HEC"],
 "Diploma":["CSE","ECE","EEE","Mechanical","Civil"],
 "Degree":["B.Sc","B.Com","BBA","BA"],
 "B.Tech":["CSE","IT","AI & ML","Data Science","ECE","Mechanical","Civil"],
-"M.Tech":["CSE","AI","Data Science","VLSI"],
+"M.Tech":["CSE","AI","Data Science"],
 "PG":["MBA","MCA","M.Sc"]
 }
 
+# ---------- GAUGE ----------
+
+def gauge(score):
+
+    fig,ax=plt.subplots(figsize=(3,2))
+
+    ax.barh([""],[score])
+
+    ax.set_xlim(0,100)
+
+    ax.set_title("Career Success Probability")
+
+    return fig
+
 # ---------- TABS ----------
 
-tab1,tab2,tab3,tab4,tab5 = st.tabs([
+tab1,tab2,tab3,tab4,tab5=st.tabs([
 "🏠 Home",
 "🚀 Career Prediction",
 "📄 Resume Analyzer",
@@ -90,83 +114,50 @@ tab1,tab2,tab3,tab4,tab5 = st.tabs([
 "💬 Career Chatbot"
 ])
 
-# =====================================================
+# ====================================================
 # HOME
-# =====================================================
+# ====================================================
 
 with tab1:
 
-    col1,col2 = st.columns([3,1])
+    col1,col2,col3=st.columns([2,2,1])
 
-    with col1:
+    col1.metric("Career Prediction Accuracy","95%")
+    col2.metric("Resume Analysis Quality","92%")
 
-        st.metric("Career Prediction Accuracy","95%")
-        st.metric("Resume Analysis Quality","90%")
-
-        st.header("Welcome to JobFitBot")
-
-        st.write("""
-JobFitBot helps students:
-
-• Discover career paths  
-• Analyze resume skills  
-• Identify skill gaps  
-• Get learning roadmap
-""")
-
-        st.subheader("Trending Careers")
-
-        st.write("• AI Engineer")
-        st.write("• Data Scientist")
-        st.write("• Cloud Engineer")
-        st.write("• Cyber Security Analyst")
-
-    with col2:
-
-        st.subheader("Tech Demand")
+    with col3:
 
         fig=plt.figure(figsize=(2,2))
         plt.pie([35,25,20,20],labels=["AI","Cloud","Cyber","Data"])
         st.pyplot(fig)
 
-# =====================================================
+    st.header("Welcome to JobFitBot")
+
+    st.write("""
+AI powered system that helps students discover careers,
+analyze resumes and build skill roadmaps.
+""")
+
+# ====================================================
 # CAREER PREDICTION
-# =====================================================
+# ====================================================
 
 with tab2:
 
-    col1,col2 = st.columns([3,1])
+    education=st.selectbox("Education",list(education_branches.keys()))
 
-    with col1:
+    branch=st.selectbox("Branch",education_branches[education])
 
-        education=st.selectbox("Education",list(education_branches.keys()))
+    experience=st.selectbox("Experience",
+    ["Fresher","0-2 years","2-5 years","5+ years"])
 
-        branch=st.selectbox("Branch / Field",education_branches[education])
+    skills_input=st.text_input("Enter Skills (comma separated)")
 
-        experience=st.selectbox("Experience",
-        ["Fresher","0-2 years","2-5 years","5+ years"])
+    cert_text=st.text_input("Certifications (optional)")
 
-        skills_input=st.text_input("Enter Skills (comma separated)")
+    cert_upload=st.file_uploader("Upload Certifications",accept_multiple_files=True)
 
-        certifications_text=st.text_input("Enter Certifications (optional)")
-
-        certifications_upload=st.file_uploader(
-        "Upload Certification Files (optional)",
-        accept_multiple_files=True)
-
-        analyze=st.button("Analyze My Career")
-
-    with col2:
-
-        if skills_input:
-
-            skills=[s.strip() for s in skills_input.split(",")]
-
-            fig=plt.figure(figsize=(2,2))
-            plt.pie([1]*len(skills),labels=skills)
-            st.pyplot(fig)
-
-    if analyze:
+    if st.button("Analyze My Career"):
 
         user_skills=[s.strip().lower() for s in skills_input.split(",") if s!=""]
 
@@ -182,20 +173,25 @@ with tab2:
 
         results=sorted(results,key=lambda x:x[1],reverse=True)
 
-        st.subheader("Top Career Matches")
+        st.subheader("🎯 Top Career Recommendations")
 
-        for job,score,gap in results[:5]:
+        colors=["#22c55e","#38bdf8","#f97316"]
 
-            st.write(f"**{job} — Match: {round(score,2)}%**")
-            st.write("Average Salary:",salary[job])
-            st.write("---")
+        for i,(job,score,gap) in enumerate(results[:3]):
 
-        st.subheader("Career Roadmap")
+            st.markdown(
+            f"<h3 style='color:{colors[i]}'>{job} — {round(score,2)}% Match</h3>",
+            unsafe_allow_html=True)
+
+            st.write("Salary:",salary[job])
 
         top_job=results[0][0]
+        top_score=results[0][1]
         top_gap=results[0][2]
 
-        st.write("Target Career:",top_job)
+        st.pyplot(gauge(top_score))
+
+        st.subheader("📈 Career Roadmap")
 
         for skill in top_gap:
 
@@ -206,9 +202,9 @@ with tab2:
                 for source in learning_resources[skill]:
                     st.write("•",source)
 
-# =====================================================
+# ====================================================
 # RESUME ANALYZER
-# =====================================================
+# ====================================================
 
 with tab3:
 
@@ -235,64 +231,91 @@ with tab3:
 
         st.write(detected)
 
-        st.subheader("Skills to Improve")
+        results=[]
 
-        missing=[s for s in skills_db if s not in detected]
+        for job,req in jobs.items():
 
-        for m in missing[:5]:
+            match=len(set(detected)&set(req))
+            score=(match/len(req))*100
 
-            st.write("Skill:",m)
+            results.append((job,score))
 
-            if m in learning_resources:
+        results=sorted(results,key=lambda x:x[1],reverse=True)
 
-                for source in learning_resources[m]:
-                    st.write("•",source)
+        st.subheader("Top 3 Career Matches")
 
-# =====================================================
+        for job,score in results[:3]:
+
+            st.write(job,"—",round(score,2),"%")
+
+# ====================================================
 # CAREER TEST
-# =====================================================
+# ====================================================
 
 with tab4:
 
     q1=st.radio(
-    "Which activity do you enjoy most?",
-    ["Coding","Designing","Analyzing Data","Managing People"]
+    "Which activity do you enjoy?",
+    ["Coding","Design","Data Analysis","Management","Security"]
+    )
+
+    q2=st.radio(
+    "Which tool do you prefer?",
+    ["Python","Excel","Figma","AWS","Networking"]
     )
 
     if st.button("Show Career Suggestion"):
 
         if q1=="Coding":
-            st.success("Suggested Career: Software Engineer")
+            st.success("Software Engineer")
 
-        elif q1=="Designing":
-            st.success("Suggested Career: UI/UX Designer")
+        elif q1=="Design":
+            st.success("UI UX Designer")
 
-        elif q1=="Analyzing Data":
-            st.success("Suggested Career: Data Scientist")
+        elif q1=="Data Analysis":
+            st.success("Data Scientist")
+
+        elif q1=="Security":
+            st.success("Cyber Security Analyst")
 
         else:
-            st.success("Suggested Career: Business Manager")
+            st.success("Business Manager")
 
-# =====================================================
+# ====================================================
 # CHATBOT
-# =====================================================
+# ====================================================
 
 with tab5:
 
-    question=st.text_input("Ask a career question")
+    question=st.text_input("Ask about any career or skill")
 
     if question:
 
         q=question.lower()
 
-        if "data scientist" in q:
-            st.write("Skills: Python, Machine Learning, SQL")
+        found=False
 
-        elif "software engineer" in q:
-            st.write("Skills: Java/Python, Data Structures")
+        for job,skills in jobs.items():
 
-        elif "cloud" in q:
-            st.write("Skills: AWS, Docker, Linux")
+            if job.lower() in q:
 
-        else:
-            st.write("Try asking about Data Scientist, Cloud Engineer, Software Engineer.")
+                st.write("Skills required:",skills)
+                st.write("Average Salary:",salary[job])
+                found=True
+
+        for skill in skills_db:
+
+            if skill in q:
+
+                st.write("Learning resources for",skill)
+
+                if skill in learning_resources:
+
+                    for r in learning_resources[skill]:
+                        st.write("•",r)
+
+                found=True
+
+        if not found:
+
+            st.write("Try asking about careers like Data Scientist, Cloud Engineer, Web Developer or skills like Python, AWS etc.")
