@@ -100,7 +100,7 @@ with tab1:
     with col1:
         st.metric("Career Prediction Accuracy","95%")
         # 0.5 cm spacing
-    st.markdown("<div style='height:0.5cm'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:0.2cm'></div>", unsafe_allow_html=True)
     st.header("Welcome to JobFitBot")
     with col2:
         st.metric("Resume Analysis Quality","92%")
