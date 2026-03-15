@@ -177,18 +177,56 @@ with tab2:
             results.append((job,score,gap))
 
         results=sorted(results,key=lambda x:x[1],reverse=True)
-
         st.subheader("🎯 Top Career Matches")
 
-        colors=["#22c55e","#38bdf8","#f97316"]
+colors=["#22c55e","#38bdf8","#f97316"]
 
-        for i,(job,score,gap) in enumerate(results[:3]):
+for i,(job,score,gap) in enumerate(results[:3]):
 
-            st.markdown(
-            f"<h3 style='color:{colors[i]}'>{job} — {round(score,2)}% Match</h3>",
-            unsafe_allow_html=True)
+    st.markdown(
+    f"<h3 style='color:{colors[i]}'>{job} — {round(score,2)}% Match</h3>",
+    unsafe_allow_html=True)
 
-            st.write("Average Salary:",salary[job])
+    st.write("💰 Average Salary:",salary[job])
+
+    if gap:
+
+        st.write("📌 Skills to Improve:")
+
+        for skill in gap:
+
+            st.write("•",skill)
+
+            # learning sources
+            if skill=="python":
+                st.write("   Source: https://www.coursera.org/courses?query=python")
+
+            elif skill=="machine learning":
+                st.write("   Source: https://www.coursera.org/learn/machine-learning")
+
+            elif skill=="sql":
+                st.write("   Source: https://www.w3schools.com/sql/")
+
+            elif skill=="html":
+                st.write("   Source: https://www.w3schools.com/html/")
+
+            elif skill=="css":
+                st.write("   Source: https://www.w3schools.com/css/")
+
+            elif skill=="javascript":
+                st.write("   Source: https://www.w3schools.com/js/")
+
+            elif skill=="react":
+                st.write("   Source: https://react.dev/learn")
+
+            elif skill=="aws":
+                st.write("   Source: https://aws.amazon.com/training/")
+
+            elif skill=="docker":
+                st.write("   Source: https://docs.docker.com/get-started/")
+
+            elif skill=="linux":
+                st.write("   Source: https://linuxjourney.com/")
 
         top_job=results[0][0]
         top_gap=results[0][2]
