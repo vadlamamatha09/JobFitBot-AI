@@ -1,82 +1,55 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-import numpy as np
 from PyPDF2 import PdfReader
 
-st.set_page_config(page_title="JobFitBot",layout="wide")
+st.set_page_config(page_title="JobFitBot", layout="wide")
 
-# ---------- DARK UI ----------
+# ---------- DARK THEME ----------
+
 st.markdown("""
 <style>
 
-/* MAIN BACKGROUND */
-
 .stApp{
 background-color:#0f172a;
-color:white;
 }
 
-/* ALL TEXT */
+/* headings */
 
-html, body, [class*="css"]  {
-color: white;
+h1,h2,h3,h4,h5,h6{
+color:#ffffff;
+}
+
+/* normal text */
+
+p,span,label{
+color:#e2e8f0 !important;
 font-size:16px;
 }
 
-/* HEADINGS */
-
-h1,h2,h3,h4,h5,h6{
-color:#f8fafc;
-}
-
-/* INPUT BOXES */
-
-.stTextInput input,
-.stSelectbox div,
-.stFileUploader,
-textarea{
-background-color:#1e293b !important;
-color:white !important;
-border:1px solid #38bdf8 !important;
-}
-
-/* BUTTONS */
-
-.stButton>button{
-background:linear-gradient(90deg,#6366f1,#06b6d4);
-color:white;
-border-radius:10px;
-font-weight:bold;
-}
-
-/* TAB TEXT */
+/* tab titles */
 
 button[data-baseweb="tab"]{
 color:white !important;
 font-size:16px;
 }
 
-/* RADIO TEXT */
+/* buttons */
 
-.stRadio label{
-color:white !important;
-}
-
-/* METRICS */
-
-[data-testid="stMetric"]{
-background-color:#1e293b;
-padding:10px;
-border-radius:10px;
+.stButton>button{
+background:linear-gradient(90deg,#6366f1,#06b6d4);
+color:white;
+border-radius:8px;
+font-weight:bold;
 }
 
 </style>
-""",unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
 st.title("🤖 JobFitBot – AI Career Advisor")
 
 # ---------- JOB DATABASE ----------
 
-jobs={
+jobs = {
 "Data Scientist":["python","machine learning","sql"],
 "Software Engineer":["java","python","algorithms"],
 "Web Developer":["html","css","javascript","react"],
@@ -106,20 +79,6 @@ skills_db=[
 "figma","flutter","kotlin"
 ]
 
-learning_resources={
-"python":["Coursera Python","freeCodeCamp Python","YouTube Python"],
-"machine learning":["Coursera ML","freeCodeCamp ML","YouTube ML"],
-"sql":["Coursera SQL","freeCodeCamp SQL","YouTube SQL"],
-"html":["freeCodeCamp HTML"],
-"css":["freeCodeCamp CSS"],
-"javascript":["freeCodeCamp JS"],
-"react":["Udemy React"],
-"aws":["Coursera AWS"],
-"docker":["Docker Tutorial"],
-"linux":["Linux Tutorial"],
-"excel":["Excel Tutorial"]
-}
-
 education_branches={
 "Inter":["MPC","BiPC","CEC","HEC"],
 "Diploma":["CSE","ECE","EEE","Mechanical","Civil"],
@@ -129,23 +88,9 @@ education_branches={
 "PG":["MBA","MCA","M.Sc"]
 }
 
-# ---------- GAUGE ----------
-
-def gauge(score):
-
-    fig,ax=plt.subplots(figsize=(3,2))
-
-    ax.barh([""],[score])
-
-    ax.set_xlim(0,100)
-
-    ax.set_title("Career Success Probability")
-
-    return fig
-
 # ---------- TABS ----------
 
-tab1,tab2,tab3,tab4,tab5=st.tabs([
+tab1,tab2,tab3,tab4,tab5 = st.tabs([
 "🏠 Home",
 "🚀 Career Prediction",
 "📄 Resume Analyzer",
@@ -159,22 +104,26 @@ tab1,tab2,tab3,tab4,tab5=st.tabs([
 
 with tab1:
 
-    col1,col2,col3=st.columns([2,2,1])
+    col1,col2,col3 = st.columns([2,2,1])
 
     col1.metric("Career Prediction Accuracy","95%")
     col2.metric("Resume Analysis Quality","92%")
 
     with col3:
 
-        fig=plt.figure(figsize=(2,2))
+        fig = plt.figure(figsize=(2,2))
         plt.pie([35,25,20,20],labels=["AI","Cloud","Cyber","Data"])
         st.pyplot(fig)
 
     st.header("Welcome to JobFitBot")
 
     st.write("""
-AI powered system that helps students discover careers,
-analyze resumes and build skill roadmaps.
+JobFitBot is an AI-based career advisor that helps students:
+
+• Discover career opportunities  
+• Analyze resume skills  
+• Identify skill gaps  
+• Build a career learning roadmap
 """)
 
 # ====================================================
@@ -183,18 +132,23 @@ analyze resumes and build skill roadmaps.
 
 with tab2:
 
-    education=st.selectbox("Education",list(education_branches.keys()))
+    education = st.selectbox("Education",list(education_branches.keys()))
 
-    branch=st.selectbox("Branch",education_branches[education])
+    branch = st.selectbox("Branch",education_branches[education])
 
-    experience=st.selectbox("Experience",
-    ["Fresher","0-2 years","2-5 years","5+ years"])
+    experience = st.selectbox(
+    "Experience",
+    ["Fresher","0-2 years","2-5 years","5+ years"]
+    )
 
-    skills_input=st.text_input("Enter Skills (comma separated)")
+    skills_input = st.text_input("Enter Skills (comma separated)")
 
-    cert_text=st.text_input("Certifications (optional)")
+    cert_text = st.text_input("Certifications (optional)")
 
-    cert_upload=st.file_uploader("Upload Certifications",accept_multiple_files=True)
+    cert_upload = st.file_uploader(
+    "Upload Certifications (optional)",
+    accept_multiple_files=True
+    )
 
     if st.button("Analyze My Career"):
 
@@ -212,7 +166,7 @@ with tab2:
 
         results=sorted(results,key=lambda x:x[1],reverse=True)
 
-        st.subheader("🎯 Top Career Recommendations")
+        st.subheader("🎯 Top Career Matches")
 
         colors=["#22c55e","#38bdf8","#f97316"]
 
@@ -222,24 +176,15 @@ with tab2:
             f"<h3 style='color:{colors[i]}'>{job} — {round(score,2)}% Match</h3>",
             unsafe_allow_html=True)
 
-            st.write("Salary:",salary[job])
+            st.write("Average Salary:",salary[job])
 
         top_job=results[0][0]
-        top_score=results[0][1]
         top_gap=results[0][2]
-
-        st.pyplot(gauge(top_score))
 
         st.subheader("📈 Career Roadmap")
 
         for skill in top_gap:
-
             st.write("Learn:",skill)
-
-            if skill in learning_resources:
-
-                for source in learning_resources[skill]:
-                    st.write("•",source)
 
 # ====================================================
 # RESUME ANALYZER
@@ -247,16 +192,16 @@ with tab2:
 
 with tab3:
 
-    resume=st.file_uploader("Upload Resume PDF")
+    resume = st.file_uploader("Upload Resume PDF")
 
     if resume:
 
-        reader=PdfReader(resume)
+        reader = PdfReader(resume)
 
         text=""
 
         for page in reader.pages:
-            text+=page.extract_text()
+            text += page.extract_text()
 
         text=text.lower()
 
@@ -284,7 +229,6 @@ with tab3:
         st.subheader("Top 3 Career Matches")
 
         for job,score in results[:3]:
-
             st.write(job,"—",round(score,2),"%")
 
 # ====================================================
@@ -293,12 +237,12 @@ with tab3:
 
 with tab4:
 
-    q1=st.radio(
+    q1 = st.radio(
     "Which activity do you enjoy?",
     ["Coding","Design","Data Analysis","Management","Security"]
     )
 
-    q2=st.radio(
+    q2 = st.radio(
     "Which tool do you prefer?",
     ["Python","Excel","Figma","AWS","Networking"]
     )
@@ -306,19 +250,19 @@ with tab4:
     if st.button("Show Career Suggestion"):
 
         if q1=="Coding":
-            st.success("Software Engineer")
+            st.success("Suggested Career: Software Engineer")
 
         elif q1=="Design":
-            st.success("UI UX Designer")
+            st.success("Suggested Career: UI UX Designer")
 
         elif q1=="Data Analysis":
-            st.success("Data Scientist")
+            st.success("Suggested Career: Data Scientist")
 
         elif q1=="Security":
-            st.success("Cyber Security Analyst")
+            st.success("Suggested Career: Cyber Security Analyst")
 
         else:
-            st.success("Business Manager")
+            st.success("Suggested Career: Business Manager")
 
 # ====================================================
 # CHATBOT
@@ -326,7 +270,7 @@ with tab4:
 
 with tab5:
 
-    question=st.text_input("Ask about any career or skill")
+    question = st.text_input("Ask about any career or skill")
 
     if question:
 
@@ -338,21 +282,14 @@ with tab5:
 
             if job.lower() in q:
 
-                st.write("Skills required:",skills)
+                st.write("Skills Required:",skills)
                 st.write("Average Salary:",salary[job])
                 found=True
 
         for skill in skills_db:
 
             if skill in q:
-
-                st.write("Learning resources for",skill)
-
-                if skill in learning_resources:
-
-                    for r in learning_resources[skill]:
-                        st.write("•",r)
-
+                st.write("Skill detected:",skill)
                 found=True
 
         if not found:
