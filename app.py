@@ -1,46 +1,41 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 from PyPDF2 import PdfReader
+from streamlit_echarts import st_echarts
 
-st.set_page_config(page_title="JobFitBot",layout="wide")
+st.set_page_config(page_title="JobFitBot", layout="wide")
 
-# ---------------- STYLE ----------------
+# ---------- UI STYLE ----------
 
 st.markdown("""
 <style>
+.block-container{
+padding-top:0rem;
+}
 
 .stApp{
-background-image:linear-gradient(
-rgba(0,0,0,0.75),
-rgba(0,0,0,0.75)),
-url("https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d");
-
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
+background: linear-gradient(120deg,#0f2027,#203a43,#2c5364);
+color:white;
 }
 
-.block-container{
-padding-top:1rem;
-}
-
-h1,h2,h3,h4,label{
-color:white !important;
+button[data-baseweb="tab"]{
+color:white;
+font-size:18px;
 }
 
 .card{
-background:white;
-padding:25px;
+background:rgba(255,255,255,0.9);
+padding:20px;
 border-radius:12px;
-box-shadow:0 6px 20px rgba(0,0,0,0.3);
+margin-bottom:20px;
+color:black;
 }
-
 </style>
 """,unsafe_allow_html=True)
 
 st.title("🤖 JobFitBot – AI Career Advisor")
 
-# ---------------- JOB DATA ----------------
+# ---------- JOB DATABASE ----------
 
 jobs={
 "Data Scientist":["python","machine learning","sql"],
@@ -62,76 +57,121 @@ salary={
 "Data Analyst":"6-20 LPA"
 }
 
-skill_database=[
+skills_db=[
 "python","java","machine learning","sql","html","css",
 "javascript","react","aws","docker","linux","excel"
 ]
 
-# ---------------- TABS ----------------
+# ---------- LEARNING SOURCES ----------
 
-tab1,tab2,tab3,tab4 = st.tabs([
+learning_resources = {
+
+"python":[
+"Coursera - Python for Everybody",
+"freeCodeCamp - Python Full Course",
+"YouTube - Python Crash Course"
+],
+
+"machine learning":[
+"Coursera - Machine Learning by Andrew Ng",
+"freeCodeCamp - Machine Learning Tutorial",
+"YouTube - Machine Learning Crash Course"
+],
+
+"sql":[
+"Coursera - SQL for Data Science",
+"freeCodeCamp - SQL Tutorial",
+"YouTube - SQL Full Course"
+],
+
+"html":[
+"freeCodeCamp - HTML Course",
+"YouTube - HTML Crash Course"
+],
+
+"css":[
+"freeCodeCamp - CSS Course",
+"YouTube - CSS Tutorial"
+],
+
+"javascript":[
+"freeCodeCamp - JavaScript Course",
+"YouTube - JavaScript Tutorial"
+],
+
+"react":[
+"Udemy - React Bootcamp",
+"YouTube - React Tutorial"
+],
+
+"aws":[
+"Coursera - AWS Fundamentals",
+"YouTube - AWS Tutorial"
+],
+
+"docker":[
+"Udemy - Docker Mastery",
+"YouTube - Docker Tutorial"
+],
+
+"linux":[
+"freeCodeCamp - Linux Course",
+"YouTube - Linux Tutorial"
+],
+
+"excel":[
+"Coursera - Excel Skills for Business",
+"YouTube - Excel Tutorial"
+]
+
+}
+
+# ---------- TABS ----------
+
+tab1,tab2,tab3,tab4,tab5 = st.tabs([
 "🏠 Home",
 "🚀 Career Prediction",
 "📄 Resume Analyzer",
-"🧠 Career Test"
+"🧠 Career Test",
+"💬 Career Chatbot"
 ])
 
-# =================================================
+# =====================================================
 # HOME
-# =================================================
+# =====================================================
 
 with tab1:
 
-    col1,col2=st.columns([3,1])
+    st.markdown('<div class="card">',unsafe_allow_html=True)
 
-    with col1:
+    st.header("Welcome to JobFitBot")
 
-        st.markdown('<div class="card">',unsafe_allow_html=True)
+    st.write("""
+JobFitBot is an AI powered career guidance platform that helps students:
 
-        st.header("Welcome to JobFitBot")
-
-        st.write("""
-JobFitBot is an AI based career advisor platform.
-
-It helps students:
-
-• Discover best career roles  
-• Analyze their skills  
-• Detect skill gaps  
-• Improve job readiness  
+✔ Discover best career paths  
+✔ Analyze skills and resume  
+✔ Identify missing skills  
+✔ Generate AI career roadmap  
+✔ Improve resume quality
 """)
 
-        st.markdown('</div>',unsafe_allow_html=True)
+    st.subheader("🔥 Trending Tech Careers")
 
-    with col2:
+    trending=["AI Engineer","Data Scientist","Cloud Engineer","Cyber Security"]
 
-        st.subheader("Tech Skills")
+    for t in trending:
+        st.write("•",t)
 
-        fig=plt.figure(figsize=(2,2))
-        plt.pie(
-        [30,25,25,20],
-        labels=["Python","AI","Cloud","Web"],
-        colors=["#ff6b6b","#4ecdc4","#ffe66d","#1a535c"]
-        )
-        st.pyplot(fig)
+    st.markdown('</div>',unsafe_allow_html=True)
 
-        st.subheader("Tech Trends")
-
-        fig2=plt.figure(figsize=(2,2))
-        plt.pie(
-        [35,25,20,20],
-        labels=["AI","Cloud","Cyber","Data"],
-        colors=["#8338ec","#3a86ff","#ff006e","#fb5607"]
-        )
-        st.pyplot(fig2)
-
-# =================================================
+# =====================================================
 # CAREER PREDICTION
-# =================================================
+# =====================================================
 
 with tab2:
 
-    col1,col2=st.columns([3,1])
+    col1,col2 = st.columns([3,1])
 
     with col1:
 
@@ -152,7 +192,7 @@ with tab2:
             branches=["B.Sc","B.Com","BA","BBA"]
 
         elif education=="B.Tech":
-            branches=["CSE","IT","AI & ML","Data Science","ECE","Mechanical","Civil"]
+            branches=["CSE","IT","AI & ML","Data Science","ECE"]
 
         elif education=="M.Tech":
             branches=["CSE","AI","Data Science"]
@@ -184,7 +224,7 @@ with tab2:
 
         st.markdown('</div>',unsafe_allow_html=True)
 
-    # -------- side charts --------
+    # ---------- SIDE CHARTS ----------
 
     with col2:
 
@@ -192,103 +232,119 @@ with tab2:
 
         if skills_input:
 
-            skills=[i.strip() for i in skills_input.split(",")]
+            skills=[s.strip() for s in skills_input.split(",")]
 
             fig=plt.figure(figsize=(2,2))
-            plt.pie(
-            [1]*len(skills),
-            labels=skills,
-            colors=["#ff6b6b","#4ecdc4","#ffe66d","#1a535c","#ff9f1c"]
-            )
+            plt.pie([1]*len(skills),labels=skills)
             st.pyplot(fig)
 
-        st.subheader("Tech Trends")
+        st.subheader("Tech Demand")
 
         fig2=plt.figure(figsize=(2,2))
-        plt.pie(
-        [30,25,25,20],
-        labels=["AI","Cloud","Cyber","Data"],
-        colors=["#8338ec","#3a86ff","#ff006e","#fb5607"]
-        )
+        plt.pie([35,25,20,20],labels=["AI","Cloud","Cyber","Data"])
         st.pyplot(fig2)
-
-    # -------- career analysis --------
 
     if analyze:
 
-        if skills_input=="":
+        user_skills=[s.strip().lower() for s in skills_input.split(",") if s!=""]
 
-            st.warning("Please enter skills")
+        results=[]
 
-        else:
+        for job,req in jobs.items():
 
-            user_skills=[i.strip().lower() for i in skills_input.split(",")]
+            match=len(set(user_skills)&set(req))
+            score=(match/len(req))*100
+            gap=[g for g in req if g not in user_skills]
 
-            results=[]
+            results.append((job,score,gap))
 
-            for job,req in jobs.items():
+        results=sorted(results,key=lambda x:x[1],reverse=True)
 
-                matched=len(set(user_skills)&set(req))
-                score=(matched/len(req))*100
-                gap=[skill for skill in req if skill not in user_skills]
+        st.subheader("📊 AI Career Dashboard")
 
-                results.append((job,score,gap))
+        resume_score=min(len(user_skills)*10,100)
+        career_match=int(results[0][1])
+        skill_strength=min(len(user_skills)*10,100)
+        readiness=int((resume_score+career_match)/2)
 
-            results=sorted(results,key=lambda x:x[1],reverse=True)
+        col1,col2,col3,col4 = st.columns(4)
 
-            # -------- dashboard --------
+        def gauge(value,title):
 
-            st.subheader("📊 AI Career Dashboard")
+            option = {
+                "series":[
+                    {
+                        "type":"gauge",
+                        "startAngle":90,
+                        "endAngle":-270,
+                        "progress":{"show":True},
+                        "axisLine":{"lineStyle":{"width":10}},
+                        "axisTick":{"show":False},
+                        "splitLine":{"show":False},
+                        "axisLabel":{"show":False},
+                        "detail":{
+                            "valueAnimation":True,
+                            "formatter":"{value}%",
+                            "fontSize":18
+                        },
+                        "data":[{"value":value,"name":title}]
+                    }
+                ]
+            }
 
-            c1,c2,c3,c4=st.columns(4)
+            return option
 
-            resume_score=len(user_skills)*10
-            resume_score=min(resume_score,100)
+        with col1:
+            st_echarts(gauge(resume_score,"Resume Score"),height="200px")
 
-            career_match=int(results[0][1])
+        with col2:
+            st_echarts(gauge(career_match,"Career Match"),height="200px")
 
-            skill_strength=len(user_skills)*10
-            skill_strength=min(skill_strength,100)
+        with col3:
+            st_echarts(gauge(skill_strength,"Skill Strength"),height="200px")
 
-            job_ready=int((resume_score+career_match)/2)
+        with col4:
+            st_echarts(gauge(readiness,"Job Readiness"),height="200px")
 
-            c1.metric("Resume Score",str(resume_score)+"/100")
-            c2.metric("Career Match",str(career_match)+"%")
-            c3.metric("Skill Strength",str(skill_strength)+"/100")
-            c4.metric("Job Readiness",str(job_ready)+"%")
+        st.subheader("🎯 Best Career Matches")
 
-            st.write("---")
+        for job,score,gap in results[:3]:
 
-            st.subheader("🎯 Best Career Matches")
+            st.markdown(f"""
+            <div class="card">
+            <h3>{job}</h3>
+            <p>Match Score: {round(score,2)}%</p>
+            <p>Salary: {salary[job]}</p>
+            </div>
+            """,unsafe_allow_html=True)
 
-            for job,score,gap in results[:5]:
+        st.subheader("🧭 AI Career Roadmap")
 
-                st.write("###",job)
+        top_job=results[0][0]
+        top_gap=results[0][2]
 
-                st.progress(int(score))
+        step=1
 
-                st.write("Match Score:",round(score,2),"%")
+        for skill in top_gap:
 
-                st.info("Salary Range: "+salary[job])
+            st.write(f"Step {step} – Learn {skill}")
 
-                if gap:
+            if skill in learning_resources:
 
-                    st.write("Skills to Improve")
+                st.write("Learning Sources:")
 
-                    for g in gap[:3]:
-                        st.write("-",g)
+                for source in learning_resources[skill]:
+                    st.write("•",source)
 
-                st.write("---")
+            step+=1
 
-# =================================================
+# =====================================================
 # RESUME ANALYZER
-# =================================================
+# =====================================================
 
 with tab3:
 
     st.markdown('<div class="card">',unsafe_allow_html=True)
-
-    st.header("Resume Analyzer")
 
     resume=st.file_uploader("Upload Resume (PDF)")
 
@@ -303,30 +359,34 @@ with tab3:
 
         text=text.lower()
 
-        found=[]
+        detected=[]
 
-        for skill in skill_database:
+        for skill in skills_db:
             if skill in text:
-                found.append(skill)
+                detected.append(skill)
 
         st.success("Detected Skills")
 
-        st.write(found)
+        st.write(detected)
 
-        # ---- improvement ----
+        st.subheader("Skills to Improve")
 
-        missing=[skill for skill in skill_database if skill not in found]
-
-        st.subheader("Resume Improvement Suggestions")
+        missing=[s for s in skills_db if s not in detected]
 
         for m in missing[:5]:
-            st.write("Learn:",m)
+
+            st.subheader(m)
+
+            if m in learning_resources:
+
+                for source in learning_resources[m]:
+                    st.write("•",source)
 
     st.markdown('</div>',unsafe_allow_html=True)
 
-# =================================================
+# =====================================================
 # CAREER TEST
-# =================================================
+# =====================================================
 
 with tab4:
 
@@ -339,21 +399,48 @@ with tab4:
     ["Coding","Designing","Analyzing Data","Managing People"]
     )
 
-    if st.button("Show Result"):
+    if st.button("Show Career"):
 
         if q1=="Coding":
-            st.success("Recommended Career: Software Engineer")
+            st.success("Suggested Career: Software Engineer")
 
         elif q1=="Designing":
-            st.success("Recommended Career: UI/UX Designer")
+            st.success("Suggested Career: UI/UX Designer")
 
         elif q1=="Analyzing Data":
-            st.success("Recommended Career: Data Scientist")
+            st.success("Suggested Career: Data Scientist")
 
         else:
-            st.success("Recommended Career: Business Manager")
+            st.success("Suggested Career: Business Manager")
 
     st.markdown('</div>',unsafe_allow_html=True)
 
-st.write("---")
-st.write("JobFitBot – AI Career Advisor")
+# =====================================================
+# CHATBOT
+# =====================================================
+
+with tab5:
+
+    st.markdown('<div class="card">',unsafe_allow_html=True)
+
+    st.header("💬 AI Career Chatbot")
+
+    question=st.text_input("Ask career question")
+
+    if question:
+
+        q=question.lower()
+
+        if "data scientist" in q:
+            st.write("Skills required: Python, Machine Learning, SQL")
+
+        elif "software engineer" in q:
+            st.write("Skills required: Java/Python, DSA, System Design")
+
+        elif "cloud" in q:
+            st.write("Skills required: AWS, Docker, Linux")
+
+        else:
+            st.write("Try asking about careers like Data Scientist, Cloud Engineer, Software Engineer")
+
+    st.markdown('</div>',unsafe_allow_html=True)
