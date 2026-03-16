@@ -269,91 +269,46 @@ with tab2:
 
                     if skill in learning_sources:
                         st.write("📚",learning_sources[skill])
-
-        # Graph
-        chart_jobs = [r[0] for r in results[:5]]
-        chart_scores = [r[1]*100 for r in results[:5]]
-
-        fig2, ax = plt.subplots(figsize=(0.79,0.79))   # 2cm × 2cm graph
-
-        ax.barh(chart_jobs, chart_scores)
-
-        ax.tick_params(axis='both', labelsize=3)  # very small text
-        ax.set_xlabel("")
-        ax.set_ylabel("")
-
-        plt.tight_layout()
-
-        st.pyplot(fig2)
+# Graph
+chart_jobs=[r[0] for r in results[:3]]
+chart_scores=[r[1]*100 for r in results[:3]]
+fig,ax=plt.subplots(figsize=(0.79,0.79))
+ax.barh(chart_jobs,chart_scores)
+ax.tick_params(labelsize=3)
+st.pyplot(fig)
 # =================================================
 # RESUME ANALYZER
 # =================================================
-
 with tab3:
-
     resume = st.file_uploader("Upload Resume (PDF)",type=["pdf"])
-
     if resume:
-
         reader=PdfReader(resume)
-
         text=""
-
         for page in reader.pages:
             text+=page.extract_text()
-
         text=text.lower()
-
         detected=[skill for skill in skills_db if skill in text]
-
         st.subheader("Detected Skills")
-
         st.success(", ".join(detected))
-        if st.button("Show Career Suggestions"):
-            scores={
-                "Software Engineer":0,
-                "Data Scientist":0,
-                "UI UX Designer":0,
-                "Cyber Security Analyst":0,
-                "Product Manager":0
-            }
-            if q1=="Coding":
-                scores["Software Engineer"]+=2
-            if q1=="Design":
-                scores["UI UX Designer"]+=2
-            if q1=="Data Analysis":
-                scores["Data Scientist"]+=2
-            if q1=="Security":
-                scores["Cyber Security Analyst"]+=2
-            if q1=="Management":
-                scores["Product Manager"]+=2
-
-            if q2=="Python":
-                scores["Software Engineer"]+=1
-                scores["Data Scientist"]+=1
-            if q2=="Excel":
-                scores["Data Scientist"]+=1
-            if q2=="Figma":
-                scores["UI UX Designer"]+=1
-            if q2=="Networking":
-                scores["Cyber Security Analyst"]+=1
-
-            if q3=="Building apps":
-                scores["Software Engineer"]+=1
-            if q3=="Analyzing data":
-                scores["Data Scientist"]+=1
-            if q3=="Creative work":
-                scores["UI UX Designer"]+=1
-            if q3=="Protecting systems":
-                scores["Cyber Security Analyst"]+=1
-            if q3=="Managing teams":
-                scores["Product Manager"]+=1
-            sorted_jobs = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-            st.subheader("🎯 Top 3 Recommended Careers")
-            for job,score in sorted_jobs[:3]:
-                eligibility=(score/5)*100
-                st.write(f"**Job Role:** {job}")
-                st.write(f"Eligibility Score: {round(eligibility,1)} %")
+        st.subheader("Top Recommended Jobs")
+        jobs={
+        "Data Scientist":["python","machine learning","statistics","pandas"],
+        "Software Engineer":["java","python","dsa","algorithms"],
+        "UI UX Designer":["figma","ui","ux","design"],
+        "Cyber Security Analyst":["networking","linux","security"]
+        }
+        results=[]
+        for job,skills in jobs.items():
+            matched=set(detected_skills)&set(skills)
+            score=len(matched)/len(skills)
+            gap=list(set(skills)-set(detected_skills))
+            results.append((job,score,gap))
+        results=sorted(results,key=lambda x:x[1],reverse=True)
+        for job,score,gap in results[:3]:
+            st.write("Job Role:",job)
+            st.write("Eligibility:",round(score*100,2),"%")
+            st.write("Skill Gap:",", ".join(gap))
+            st.write("---")
 # =================================================
 # CAREER TEST
 # =================================================
@@ -367,16 +322,6 @@ with tab4:
 
     q3=st.radio("3️⃣ Work style?",
     ["Building apps","Analyzing data","Creative work","Protecting systems","Managing teams"])
-
-    q4=st.radio("4️⃣ Favorite subject?",
-    ["Algorithms","Statistics","Graphics","Cyber Security","Business"])
-
-    q5=st.radio("5️⃣ Problem type?",
-    ["Programming","Data insights","Design problems","Security threats","Strategy"])
-
-    q6=st.radio("6️⃣ Industry interest?",
-    ["AI","Software","Design","Security","Business"])
-
 
     if st.button("Show Career Suggestions"):
 
@@ -406,8 +351,6 @@ with tab4:
             scores["Data Scientist"]+=1
         if q2=="Figma":
             scores["UI UX Designer"]+=1
-        if q2=="AWS":
-            scores["Software Engineer"]+=1
         if q2=="Networking":
             scores["Cyber Security Analyst"]+=1
 
@@ -432,11 +375,11 @@ with tab4:
         }
 
         skill_gap={
-            "Software Engineer":["DSA","Java/Python","System Design"],
-            "Data Scientist":["Machine Learning","Python","Statistics"],
+            "Software Engineer":["DSA","Python","System Design"],
+            "Data Scientist":["Machine Learning","Statistics","Pandas"],
             "UI UX Designer":["Figma","User Research","Prototyping"],
-            "Cyber Security Analyst":["Networking","Ethical Hacking","Linux"],
-            "Product Manager":["Communication","Strategy","Agile"]
+            "Cyber Security Analyst":["Networking","Linux","Ethical Hacking"],
+            "Product Manager":["Agile","Communication","Strategy"]
         }
 
         sorted_jobs = sorted(scores.items(), key=lambda x: x[1], reverse=True)
