@@ -241,34 +241,80 @@ with tab2:
 # RESUME ANALYZER
 # =================================================
 with tab3:
-    resume = st.file_uploader("Upload Resume (PDF)",type=["pdf"])
-    if resume:
-        reader=PdfReader(resume)
+
+    st.header("📄 Resume Analyzer")
+
+    uploaded_file = st.file_uploader("Upload Resume", type=["pdf"])
+
+    if uploaded_file is not None:
+
+        reader = PdfReader(uploaded_file)
+
         text=""
+
         for page in reader.pages:
-            text+=page.extract_text()
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text
+
         text=text.lower()
-        detected=[skill for skill in skills_db if skill in text]
-        st.subheader("Detected Skills")
-        st.success(", ".join(detected))
-        st.subheader("Top Recommended Jobs")
+
+        # SKILL LIST
+        skills_list=[
+            "python","java","c","c++","machine learning","data analysis",
+            "html","css","javascript","react","node","sql",
+            "figma","ui","ux","networking","linux","cyber security"
+        ]
+
+        detected_skills=[skill for skill in skills_list if skill in text]
+
+        st.subheader("🛠 Skills Detected")
+
+        if detected_skills:
+            st.write(", ".join(detected_skills))
+        else:
+            st.write("No skills detected")
+
+        # JOB DATABASE
         jobs={
-        "Data Scientist":["python","machine learning","statistics","pandas"],
-        "Software Engineer":["java","python","dsa","algorithms"],
-        "UI UX Designer":["figma","ui","ux","design"],
-        "Cyber Security Analyst":["networking","linux","security"]
+            "Software Engineer":["python","java","c++","dsa","algorithms"],
+            "Data Scientist":["python","machine learning","statistics","pandas"],
+            "UI UX Designer":["figma","ui","ux","design"],
+            "Cyber Security Analyst":["networking","linux","cyber security"]
         }
+
+        salary={
+            "Software Engineer":"₹8-15 LPA",
+            "Data Scientist":"₹10-18 LPA",
+            "UI UX Designer":"₹6-12 LPA",
+            "Cyber Security Analyst":"₹8-16 LPA"
+        }
+
         results=[]
+
         for job,skills in jobs.items():
+
             matched=set(detected_skills)&set(skills)
+
             score=len(matched)/len(skills)
+
             gap=list(set(skills)-set(detected_skills))
+
             results.append((job,score,gap))
+
         results=sorted(results,key=lambda x:x[1],reverse=True)
+
+        st.subheader("🎯 Top Recommended Jobs")
+
         for job,score,gap in results[:3]:
-            st.write("Job Role:",job)
-            st.write("Eligibility:",round(score*100,2),"%")
-            st.write("Skill Gap:",", ".join(gap))
+
+            st.write("**Job Role:**",job)
+            st.write("Eligibility Score:",round(score*100,2),"%")
+            st.write("Average Salary:",salary[job])
+
+            if gap:
+                st.write("Skill Gap:",", ".join(gap))
+
             st.write("---")
 # =================================================
 # CAREER TEST
