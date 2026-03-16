@@ -313,4 +313,3 @@ with tab5:
 
                 if skill in learning_sources:
                     st.write("Learn:",learning_sources[skill])
-```
