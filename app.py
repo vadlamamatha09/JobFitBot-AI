@@ -324,21 +324,21 @@ with tab3:
                 "salary": "₹12 LPA"
             }
         }
-results = []
-for job, details in jobs.items():
-    required = details["skills"]
-    matched = list(set(detected_skills) & set(required))
-    score = len(matched) / len(required)
-    gap = list(set(required) - set(detected_skills))
-    results.append((job, score, gap, details["salary"]))
-results = sorted(results, key=lambda x: x[1], reverse=True)
-st.subheader("Top Recommended Job Roles")
-for job, score, gap, salary in results[:3]:
-    st.write(f"Job Role: {job}")
-    st.write(f"Eligibility Score: {round(score*100,2)} %")
-    st.write(f"Average Salary: {salary}")
-    st.write("Skill Gap:", ", ".join(gap))
-    st.write("---")
+        results = []
+        for job, details in jobs.items():
+            required = details["skills"]
+            matched = list(set(detected_skills) & set(required))
+            score = len(matched) / len(required)
+            gap = list(set(required) - set(detected_skills))
+            results.append((job, score, gap, details["salary"]))
+        results = sorted(results, key=lambda x: x[1], reverse=True)
+        st.subheader("Top Recommended Job Roles")
+        for job, score, gap, salary in results[:3]:
+            st.write(f"Job Role: {job}")
+            st.write(f"Eligibility Score: {round(score*100,2)} %")
+            st.write(f"Average Salary: {salary}")
+            st.write("Skill Gap:", ", ".join(gap))
+            st.write("---")
 # =================================================
 # CAREER TEST
 # =================================================
