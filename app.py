@@ -277,7 +277,7 @@ with tab2:
 
         fig2=plt.figure()
 
-        plt.bar(chart_jobs,chart_scores)
+        plt.pie(chart_jobs,chart_scores)
         plt.xticks(rotation=45)
         plt.ylabel("Match %")
 
