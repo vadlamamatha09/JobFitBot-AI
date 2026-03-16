@@ -153,15 +153,86 @@ JobFitBot analyzes **skills, resumes, and interests** to recommend the best care
 # =================================================
 # CAREER PREDICTION (AI MODEL)
 # =================================================
-
 with tab2:
 
-    skills_input = st.text_input("Enter your skills (comma separated)")
+    st.header("🚀 Career Prediction")
 
+    # EDUCATION OPTIONS
+    education = st.selectbox(
+        "🎓 Select Your Education",
+        ["Inter","Diploma","Degree","B.Tech","M.Tech","PG"]
+    )
+
+    # BRANCHES BASED ON EDUCATION
+    branches = {
+
+        "Inter":[
+            "MPC",
+            "BiPC",
+            "CEC",
+            "MEC",
+            "HEC"
+        ],
+
+        "Diploma":[
+            "Computer Engineering",
+            "Mechanical Engineering",
+            "Civil Engineering",
+            "Electrical Engineering",
+            "Electronics Engineering"
+        ],
+
+        "Degree":[
+            "B.Sc Computer Science",
+            "B.Sc Mathematics",
+            "B.Com",
+            "BBA",
+            "BA"
+        ],
+
+        "B.Tech":[
+            "Computer Science Engineering",
+            "Information Technology",
+            "Artificial Intelligence",
+            "Data Science",
+            "Electronics and Communication Engineering",
+            "Electrical Engineering",
+            "Mechanical Engineering",
+            "Civil Engineering"
+        ],
+
+        "M.Tech":[
+            "Artificial Intelligence",
+            "Data Science",
+            "Cyber Security",
+            "Software Engineering"
+        ],
+
+        "PG":[
+            "MCA",
+            "MBA",
+            "M.Sc Computer Science",
+            "M.Sc Data Science"
+        ]
+    }
+
+    branch = st.selectbox(
+        "📚 Select Your Branch / Field",
+        branches[education]
+    )
+
+    # SKILLS INPUT
+    skills_input = st.text_input(
+        "🛠 Enter your Skills (comma separated)"
+    )
+
+    # CERTIFICATION UPLOAD
+    cert_file = st.file_uploader(
+        "📜 Upload Certifications (optional)",
+        type=["pdf","png","jpg"]
+    )
     if st.button("Analyze My Career"):
-
-        user_text = skills_input.lower()
-
+        user_text = (education + " " + branch + " " + skills_input).lower()
         job_texts = [" ".join(skills) for skills in jobs.values()]
 
         corpus = job_texts + [user_text]
