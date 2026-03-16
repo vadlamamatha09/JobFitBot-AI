@@ -310,58 +310,50 @@ with tab3:
 
         st.success(", ".join(detected))
         if st.button("Show Career Suggestions"):
+            scores={
+                "Software Engineer":0,
+                "Data Scientist":0,
+                "UI UX Designer":0,
+                "Cyber Security Analyst":0,
+                "Product Manager":0
+            }
+            if q1=="Coding":
+                scores["Software Engineer"]+=2
+            if q1=="Design":
+                scores["UI UX Designer"]+=2
+            if q1=="Data Analysis":
+                scores["Data Scientist"]+=2
+            if q1=="Security":
+                scores["Cyber Security Analyst"]+=2
+            if q1=="Management":
+                scores["Product Manager"]+=2
 
-    scores={
-        "Software Engineer":0,
-        "Data Scientist":0,
-        "UI UX Designer":0,
-        "Cyber Security Analyst":0,
-        "Product Manager":0
-    }
+            if q2=="Python":
+                scores["Software Engineer"]+=1
+                scores["Data Scientist"]+=1
+            if q2=="Excel":
+                scores["Data Scientist"]+=1
+            if q2=="Figma":
+                scores["UI UX Designer"]+=1
+            if q2=="Networking":
+                scores["Cyber Security Analyst"]+=1
 
-    if q1=="Coding":
-        scores["Software Engineer"]+=2
-    if q1=="Design":
-        scores["UI UX Designer"]+=2
-    if q1=="Data Analysis":
-        scores["Data Scientist"]+=2
-    if q1=="Security":
-        scores["Cyber Security Analyst"]+=2
-    if q1=="Management":
-        scores["Product Manager"]+=2
-
-    if q2=="Python":
-        scores["Software Engineer"]+=1
-        scores["Data Scientist"]+=1
-    if q2=="Excel":
-        scores["Data Scientist"]+=1
-    if q2=="Figma":
-        scores["UI UX Designer"]+=1
-    if q2=="Networking":
-        scores["Cyber Security Analyst"]+=1
-
-    if q3=="Building apps":
-        scores["Software Engineer"]+=1
-    if q3=="Analyzing data":
-        scores["Data Scientist"]+=1
-    if q3=="Creative work":
-        scores["UI UX Designer"]+=1
-    if q3=="Protecting systems":
-        scores["Cyber Security Analyst"]+=1
-    if q3=="Managing teams":
-        scores["Product Manager"]+=1
-
-
-    sorted_jobs = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-
-    st.subheader("🎯 Top 3 Recommended Careers")
-
-    for job,score in sorted_jobs[:3]:
-
-        eligibility=(score/5)*100
-
-        st.write(f"**Job Role:** {job}")
-        st.write(f"Eligibility Score: {round(eligibility,1)} %")
+            if q3=="Building apps":
+                scores["Software Engineer"]+=1
+            if q3=="Analyzing data":
+                scores["Data Scientist"]+=1
+            if q3=="Creative work":
+                scores["UI UX Designer"]+=1
+            if q3=="Protecting systems":
+                scores["Cyber Security Analyst"]+=1
+            if q3=="Managing teams":
+                scores["Product Manager"]+=1
+            sorted_jobs = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+            st.subheader("🎯 Top 3 Recommended Careers")
+            for job,score in sorted_jobs[:3]:
+                eligibility=(score/5)*100
+                st.write(f"**Job Role:** {job}")
+                st.write(f"Eligibility Score: {round(eligibility,1)} %")
 # =================================================
 # CAREER TEST
 # =================================================
