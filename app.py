@@ -309,7 +309,36 @@ with tab3:
         st.subheader("Detected Skills")
 
         st.success(", ".join(detected))
-
+        # Job database
+        jobs = {
+            "Data Scientist": {
+                "skills": ["python","machine learning","statistics","pandas","numpy"],
+                "salary": "₹10 LPA"
+            },
+            "Web Developer": {
+                "skills": ["html","css","javascript","react","node"],
+                "salary": "₹6 LPA"
+            },
+            "AI Engineer": {
+                "skills": ["python","deep learning","tensorflow","pytorch","machine learning"],
+                "salary": "₹12 LPA"
+            }
+        }
+results = []
+for job, details in jobs.items():
+    required = details["skills"]
+    matched = list(set(detected_skills) & set(required))
+    score = len(matched) / len(required)
+    gap = list(set(required) - set(detected_skills))
+    results.append((job, score, gap, details["salary"]))
+results = sorted(results, key=lambda x: x[1], reverse=True)
+st.subheader("Top Recommended Job Roles")
+for job, score, gap, salary in results[:3]:
+    st.write(f"Job Role: {job}")
+    st.write(f"Eligibility Score: {round(score*100,2)} %")
+    st.write(f"Average Salary: {salary}")
+    st.write("Skill Gap:", ", ".join(gap))
+    st.write("---")
 # =================================================
 # CAREER TEST
 # =================================================
@@ -333,28 +362,83 @@ with tab4:
 
     q6=st.radio("6️⃣ Industry interest?",
     ["AI","Software","Design","Security","Business"])
-
     if st.button("Show Career Suggestions"):
-
-        suggestions=[]
-
+        # job score dictionary
+        scores={
+            "Software Engineer":0,
+            "Data Scientist":0,
+            "UI UX Designer":0,
+            "Cyber Security Analyst":0,
+            "Product Manager":0
+        }
+        # scoring logic
         if q1=="Coding":
-            suggestions.append("Software Engineer")
-
+            scores["Software Engineer"]+=2
         if q1=="Design":
-            suggestions.append("UI UX Designer")
-
+            scores["UI UX Designer"]+=2
         if q1=="Data Analysis":
-            suggestions.append("Data Scientist")
-
+            scores["Data Scientist"]+=2
         if q1=="Security":
-            suggestions.append("Cyber Security Analyst")
+            scores["Cyber Security Analyst"]+=2
+        if q1=="Management":
+            scores["Product Manager"]+=2
 
-        st.subheader("🎯 Suggested Careers")
+        if q2=="Python":
+            scores["Software Engineer"]+=1
+            scores["Data Scientist"]+=1
+        if q2=="Excel":
+            scores["Data Scientist"]+=1
+        if q2=="Figma":
+            scores["UI UX Designer"]+=1
+        if q2=="AWS":
+            scores["Software Engineer"]+=1
+        if q2=="Networking":
+            scores["Cyber Security Analyst"]+=1
 
-        for career in suggestions[:3]:
-            st.write(career)
+        if q3=="Building apps":
+            scores["Software Engineer"]+=1
+        if q3=="Analyzing data":
+            scores["Data Scientist"]+=1
+        if q3=="Creative work":
+            scores["UI UX Designer"]+=1
+        if q3=="Protecting systems":
+            scores["Cyber Security Analyst"]+=1
+        if q3=="Managing teams":
+            scores["Product Manager"]+=1
 
+    # salary data
+    salary={
+        "Software Engineer":"₹8-15 LPA",
+        "Data Scientist":"₹10-18 LPA",
+        "UI UX Designer":"₹6-12 LPA",
+        "Cyber Security Analyst":"₹8-16 LPA",
+        "Product Manager":"₹12-25 LPA"
+    }
+
+    # skill gap
+    skill_gap={
+        "Software Engineer":["DSA","Java/Python","System Design"],
+        "Data Scientist":["Machine Learning","Python","Statistics"],
+        "UI UX Designer":["Figma","User Research","Prototyping"],
+        "Cyber Security Analyst":["Networking","Ethical Hacking","Linux"],
+        "Product Manager":["Communication","Strategy","Agile"]
+    }
+
+    # sort results
+    sorted_jobs=sorted(scores.items(), key=lambda x:x[1], reverse=True)
+
+    st.subheader("🎯 Top 3 Recommended Careers")
+
+    for job,score in sorted_jobs[:3]:
+
+        eligibility=(score/5)*100
+
+        st.write(f"**Job Role:** {job}")
+        st.write(f"Eligibility Score: {round(eligibility,1)}%")
+        st.write(f"Average Salary: {salary[job]}")
+        st.write("Skill Gap:", ", ".join(skill_gap[job]))
+
+        st.write("---")
 # =================================================
 # CHATBOT
 # =================================================
