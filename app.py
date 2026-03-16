@@ -425,19 +425,14 @@ with tab4:
     }
 
     # sort results
-    sorted_jobs=sorted(scores.items(), key=lambda x:x[1], reverse=True)
-
+    results = sorted(results, key=lambda x: x[1], reverse=True)
     st.subheader("🎯 Top 3 Recommended Careers")
-
     for job,score in sorted_jobs[:3]:
-
         eligibility=(score/5)*100
-
         st.write(f"**Job Role:** {job}")
         st.write(f"Eligibility Score: {round(eligibility,1)}%")
         st.write(f"Average Salary: {salary[job]}")
         st.write("Skill Gap:", ", ".join(skill_gap[job]))
-
         st.write("---")
 # =================================================
 # CHATBOT
