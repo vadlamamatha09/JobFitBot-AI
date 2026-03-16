@@ -271,16 +271,20 @@ with tab2:
                         st.write("📚",learning_sources[skill])
 
         # Graph
-        chart_jobs = [r[0] for r in results[:5]]
-        chart_scores = [r[1]*100 for r in results[:5]]
+chart_jobs = [r[0] for r in results[:5]]
+chart_scores = [r[1]*100 for r in results[:5]]
 
-        fig2 = plt.figure(figsize=(0.79,0.79))   # 2cm × 2cm
+fig2, ax = plt.subplots(figsize=(0.79,0.79))   # 2cm × 2cm graph
 
-        plt.pie(chart_scores, labels=chart_jobs, textprops={'fontsize':3})
+ax.barh(chart_jobs, chart_scores)
 
-        plt.tight_layout()
+ax.tick_params(axis='both', labelsize=3)  # very small text
+ax.set_xlabel("")
+ax.set_ylabel("")
 
-        st.pyplot(fig2)
+plt.tight_layout()
+
+st.pyplot(fig2)
 # =================================================
 # RESUME ANALYZER
 # =================================================
