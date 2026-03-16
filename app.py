@@ -357,7 +357,6 @@ with tab3:
 # =================================================
 # CAREER TEST
 # =================================================
-
 with tab4:
 
     q1=st.radio("1️⃣ What do you enjoy most?",
@@ -377,8 +376,10 @@ with tab4:
 
     q6=st.radio("6️⃣ Industry interest?",
     ["AI","Software","Design","Security","Business"])
+
+
     if st.button("Show Career Suggestions"):
-        # job score dictionary
+
         scores={
             "Software Engineer":0,
             "Data Scientist":0,
@@ -386,7 +387,7 @@ with tab4:
             "Cyber Security Analyst":0,
             "Product Manager":0
         }
-        # scoring logic
+
         if q1=="Coding":
             scores["Software Engineer"]+=2
         if q1=="Design":
@@ -421,34 +422,37 @@ with tab4:
         if q3=="Managing teams":
             scores["Product Manager"]+=1
 
-    # salary data
-    salary={
-        "Software Engineer":"₹8-15 LPA",
-        "Data Scientist":"₹10-18 LPA",
-        "UI UX Designer":"₹6-12 LPA",
-        "Cyber Security Analyst":"₹8-16 LPA",
-        "Product Manager":"₹12-25 LPA"
-    }
 
-    # skill gap
-    skill_gap={
-        "Software Engineer":["DSA","Java/Python","System Design"],
-        "Data Scientist":["Machine Learning","Python","Statistics"],
-        "UI UX Designer":["Figma","User Research","Prototyping"],
-        "Cyber Security Analyst":["Networking","Ethical Hacking","Linux"],
-        "Product Manager":["Communication","Strategy","Agile"]
-    }
+        salary={
+            "Software Engineer":"₹8-15 LPA",
+            "Data Scientist":"₹10-18 LPA",
+            "UI UX Designer":"₹6-12 LPA",
+            "Cyber Security Analyst":"₹8-16 LPA",
+            "Product Manager":"₹12-25 LPA"
+        }
 
-    # sort results
-    results = sorted(results, key=lambda x: x[1], reverse=True)
-    st.subheader("🎯 Top 3 Recommended Careers")
-    for job,score in sorted_jobs[:3]:
-        eligibility=(score/5)*100
-        st.write(f"**Job Role:** {job}")
-        st.write(f"Eligibility Score: {round(eligibility,1)}%")
-        st.write(f"Average Salary: {salary[job]}")
-        st.write("Skill Gap:", ", ".join(skill_gap[job]))
-        st.write("---")
+        skill_gap={
+            "Software Engineer":["DSA","Java/Python","System Design"],
+            "Data Scientist":["Machine Learning","Python","Statistics"],
+            "UI UX Designer":["Figma","User Research","Prototyping"],
+            "Cyber Security Analyst":["Networking","Ethical Hacking","Linux"],
+            "Product Manager":["Communication","Strategy","Agile"]
+        }
+
+        sorted_jobs = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+
+        st.subheader("🎯 Top 3 Recommended Careers")
+
+        for job,score in sorted_jobs[:3]:
+
+            eligibility=(score/5)*100
+
+            st.write(f"**Job Role:** {job}")
+            st.write(f"Eligibility Score: {round(eligibility,1)}%")
+            st.write(f"Average Salary: {salary[job]}")
+            st.write("Skill Gap:", ", ".join(skill_gap[job]))
+
+            st.write("---")
 # =================================================
 # CHATBOT
 # =================================================
